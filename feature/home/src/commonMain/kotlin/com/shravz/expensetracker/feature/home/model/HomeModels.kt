@@ -38,6 +38,7 @@ data class Transaction(
  */
 data class HomeData(
     val userName: String,
+    val balance: Double,
     val expenses: List<Expense>,
     val recipients: List<Recipient>,
     val recentTransactions: List<Transaction>

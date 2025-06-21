@@ -29,6 +29,7 @@ class MockHomeNetworkDataSource : HomeNetworkDataSource {
         return Result.success(
             HomeData(
                 userName = "John",
+                balance = 34996.0,
                 expenses = createMockExpenses(),
                 recipients = createMockRecipients(),
                 recentTransactions = createMockTransactions()
@@ -64,10 +65,10 @@ class MockHomeNetworkDataSource : HomeNetworkDataSource {
         val today = Clock.System.todayIn(TimeZone.currentSystemDefault())
         return listOf(
             Transaction("1", 120.0, today.minus(DatePeriod(days = 1)).toString(), "1", "Alice", "Food", false),
-            Transaction("2", 75.0, today.minus(DatePeriod(days = 5)).toString(), "2", "Salary", "Income", true),
+            Transaction("2", 75.0, today.minus(DatePeriod(days = 5)).toString(), "2", "Company", "Income", true),
             Transaction("3", 200.0, today.minus(DatePeriod(days = 10)).toString(), "3", "Charlie", "Shopping", false),
             Transaction("4", 50.0, today.minus(DatePeriod(days = 15)).toString(), "4", "David", "Entertainment", false),
-            Transaction("5", 300.0, today.minus(DatePeriod(days = 20)).toString(), "1", "Salary", "Income", true)
+            Transaction("5", 300.0, today.minus(DatePeriod(days = 20)).toString(), "1", "Company", "Income", true)
         )
     }
 }

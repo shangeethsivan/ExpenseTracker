@@ -91,6 +91,15 @@ fun CustomBottomNavigation(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                /*
+                // Android the first destination is null always
+                // uncomment this piece of code for the home icon in Android IOS seems to work fine.
+                val destination = Destination.HomeDestination
+                CustomBottomNavigationItem(
+                    destination = destination,
+                    isSelected = currentDestination == destination,
+                    onClick = { onDestinationSelected(destination) }
+                )*/
                 items.filterNotNull().forEach { destination ->
                     val isSelected = currentDestination == destination
                     CustomBottomNavigationItem(
@@ -151,8 +160,6 @@ fun CustomBottomNavigationItem(
                     Color.White
                 })
             )
-
-        // Show text only when selected
         if (isSelected) {
             Text(
                 text = destination.title,

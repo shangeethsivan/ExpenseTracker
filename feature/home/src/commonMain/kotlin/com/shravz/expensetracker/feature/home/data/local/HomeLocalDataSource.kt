@@ -27,38 +27,60 @@ interface HomeLocalDataSource {
  */
 class InMemoryHomeLocalDataSource : HomeLocalDataSource {
     private var cachedHomeData: HomeData? = null
-    
+
     override suspend fun getHomeData(): HomeData? = cachedHomeData
-    
+
     override suspend fun saveHomeData(homeData: HomeData) {
         cachedHomeData = homeData
     }
-    
+
     override suspend fun getExpenses(): List<Expense> = cachedHomeData?.expenses ?: emptyList()
-    
-    override suspend fun getRecipients(): List<Recipient> = cachedHomeData?.recipients ?: emptyList()
-    
-    override suspend fun getTransactions(): List<Transaction> = cachedHomeData?.recentTransactions ?: emptyList()
-    
+
+    override suspend fun getRecipients(): List<Recipient> =
+        cachedHomeData?.recipients ?: emptyList()
+
+    override suspend fun getTransactions(): List<Transaction> =
+        cachedHomeData?.recentTransactions ?: emptyList()
+
     override suspend fun saveExpenses(expenses: List<Expense>) {
-        cachedHomeData = cachedHomeData?.copy(expenses = expenses) ?: 
-            HomeData("", expenses, emptyList(), emptyList())
+        cachedHomeData = cachedHomeData?.copy(expenses = expenses) ?: HomeData(
+            "",
+            0.0,
+            expenses,
+            emptyList(),
+            emptyList()
+        )
     }
-    
+
     override suspend fun saveRecipients(recipients: List<Recipient>) {
-        cachedHomeData = cachedHomeData?.copy(recipients = recipients) ?: 
-            HomeData("", emptyList(), recipients, emptyList())
+        cachedHomeData = cachedHomeData?.copy(recipients = recipients) ?: HomeData(
+            "",
+            0.0,
+            emptyList(),
+            recipients,
+            emptyList()
+        )
     }
-    
+
     override suspend fun saveTransactions(transactions: List<Transaction>) {
-        cachedHomeData = cachedHomeData?.copy(recentTransactions = transactions) ?: 
-            HomeData("", emptyList(), emptyList(), transactions)
+        cachedHomeData = cachedHomeData?.copy(recentTransactions = transactions) ?: HomeData(
+            "",
+            0.0,
+            emptyList(),
+            emptyList(),
+            transactions
+        )
     }
-    
+
     override suspend fun saveUserName(userName: String) {
-        cachedHomeData = cachedHomeData?.copy(userName = userName) ?: 
-            HomeData(userName, emptyList(), emptyList(), emptyList())
+        cachedHomeData = cachedHomeData?.copy(userName = userName) ?: HomeData(
+            userName,
+            0.0,
+            emptyList(),
+            emptyList(),
+            emptyList()
+        )
     }
-    
+
     override suspend fun getUserName(): String? = cachedHomeData?.userName
 }
