@@ -55,7 +55,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.shravz.expensetracker.feature.home.model.Expense
+import com.shravz.expensetracker.model.Expense
 import com.shravz.expensetracker.feature.home.presentation.model.ExpenseTimeRange
 import kotlin.math.roundToInt
 

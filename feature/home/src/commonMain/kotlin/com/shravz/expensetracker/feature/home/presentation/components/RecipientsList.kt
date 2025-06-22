@@ -24,7 +24,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.shravz.expensetracker.feature.home.model.Recipient
+import com.shravz.expensetracker.model.Recipient
 import kotlin.math.floor
 
 /**

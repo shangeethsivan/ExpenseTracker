@@ -1,4 +1,4 @@
-package com.shravz.expensetracker.feature.home.model
+package com.shravz.expensetracker.model
 
 /**
  * Represents an expense entry with amount and date

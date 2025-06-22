@@ -92,14 +92,15 @@ fun CustomBottomNavigation(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 /*
-                // Android the first destination is null always
-                // uncomment this piece of code for the home icon in Android IOS seems to work fine.
+                // In Android for some reason in runtime the first destination is null always
+                // Comment L98-103 this when running on IOS.
+                */
                 val destination = Destination.HomeDestination
                 CustomBottomNavigationItem(
                     destination = destination,
                     isSelected = currentDestination == destination,
                     onClick = { onDestinationSelected(destination) }
-                )*/
+                )
                 items.filterNotNull().forEach { destination ->
                     val isSelected = currentDestination == destination
                     CustomBottomNavigationItem(

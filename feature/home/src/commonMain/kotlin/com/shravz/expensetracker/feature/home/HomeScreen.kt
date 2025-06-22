@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -51,25 +52,49 @@ fun HomeScreen() {
             .padding(vertical = 16.dp), // Overall vertical padding
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        // Add refresh button at the top
+        Button(
+            onClick = { viewModel.loadHomeData() },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 8.dp)
+        ) {
+            Text(if (uiState.isLoading) "Loading..." else "Refresh")
+        }
+
         val homeData = uiState.homeData
         if (homeData != null) {
-            Row(
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp), // Padding for the Row content
-                verticalAlignment = Alignment.CenterVertically
+                    .padding(horizontal = 16.dp)
             ) {
-                Text(
-                    text = "Welcome, ${homeData.userName}!",
-                    style = MaterialTheme.typography.headlineMedium,
-                    fontWeight = FontWeight.SemiBold
-                )
-                Spacer(modifier = Modifier.weight(1f))
-                Image(
-                    modifier = Modifier.size(24.dp),
-                    painter = painterResource(resource = Res.drawable.bell_24),
-                    contentDescription = "Notifications",
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Welcome, ${homeData.userName}!",
+                        style = MaterialTheme.typography.headlineMedium,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                    Spacer(modifier = Modifier.weight(1f))
+                    Image(
+                        modifier = Modifier.size(24.dp),
+                        painter = painterResource(resource = Res.drawable.bell_24),
+                        contentDescription = "Notifications",
+                    )
+                }
+
+                // Display data source indicator
+                if (uiState.dataSource.isNotEmpty()) {
+                    Text(
+                        text = "Data source: ${uiState.dataSource}",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(top = 4.dp)
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.height(8.dp))

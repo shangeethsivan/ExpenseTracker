@@ -2,9 +2,10 @@ package com.shravz.expensetracker.feature.home.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.shravz.expensetracker.feature.home.data.repository.HomeRepository
-import com.shravz.expensetracker.feature.home.model.Expense
-import com.shravz.expensetracker.feature.home.model.HomeData
+import com.shravz.expensetracker.datasource.repository.DataSource
+import com.shravz.expensetracker.datasource.repository.HomeRepository
+import com.shravz.expensetracker.model.Expense
+import com.shravz.expensetracker.model.HomeData
 import com.shravz.expensetracker.feature.home.presentation.model.ExpenseTimeRange // <-- CHANGED
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -34,7 +35,9 @@ class HomeViewModel(
         val homeData: HomeData? = null,
         val chartExpenses: List<Expense> = emptyList(),
         val selectedTimeRange: ExpenseTimeRange = ExpenseTimeRange.MONTH_1, // <-- CHANGED
-        val error: String? = null
+        val error: String? = null,
+        val isFirstLoad: Boolean = true,
+        val dataSource: String = "" // Indicates where the data is coming from (local or network)
     )
 
     private val _uiState = MutableStateFlow(HomeUiState(isLoading = true))
@@ -43,6 +46,9 @@ class HomeViewModel(
     private val _selectedTimeRange = MutableStateFlow(ExpenseTimeRange.MONTH_1) // <-- CHANGED
 
     private val _rawHomeData = MutableStateFlow<HomeData?>(null)
+
+    // Flag to track if it's the first time loading data
+    private var isFirstLoad = true
 
     init {
         loadHomeData()
@@ -58,7 +64,10 @@ class HomeViewModel(
                     homeData = homeData ?: _uiState.value.homeData,
                     chartExpenses = processedExpenses,
                     selectedTimeRange = timeRange, // <-- CHANGED
-                    isLoading = _uiState.value.isLoading
+                    isLoading = _uiState.value.isLoading,
+                    // Preserve other fields
+                    isFirstLoad = _uiState.value.isFirstLoad,
+                    dataSource = _uiState.value.dataSource
                 )
             }.stateIn(
                 scope = viewModelScope,
@@ -70,7 +79,10 @@ class HomeViewModel(
                         homeData = newStatePart.homeData,
                         chartExpenses = newStatePart.chartExpenses,
                         selectedTimeRange = newStatePart.selectedTimeRange, // <-- CHANGED
-                        isLoading = newStatePart.isLoading
+                        isLoading = newStatePart.isLoading,
+                        // Preserve other fields
+                        isFirstLoad = newStatePart.isFirstLoad,
+                        dataSource = newStatePart.dataSource
                     )
                  }
             }
@@ -80,12 +92,44 @@ class HomeViewModel(
     fun loadHomeData() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, error = null) }
-            repository.getHomeData().collect { result ->
+
+            // Use forceLocalOnly on first load to ensure we load from local database
+            val currentIsFirstLoad = isFirstLoad
+
+            repository.getHomeData(forceLocalOnly = currentIsFirstLoad).collect { result ->
                 result.fold(
-                    onSuccess = { homeData ->
-                        _rawHomeData.value = homeData
+                    onSuccess = { homeDataResult ->
+                        // Get the actual data source from the result
+                        val dataSource = when (homeDataResult.source) {
+                            DataSource.LOCAL -> "Local Database"
+                            DataSource.NETWORK -> "Network"
+                        }
+
+                        val homeData = homeDataResult.data
+
+                        // Clean the username by removing the data source indicator
+                        val cleanedUserName = homeData.userName.replace(" \\(Network\\)| \\(Local DB\\)".toRegex(), "")
+
+                        // Create a copy of homeData with the cleaned username
+                        val cleanedHomeData = homeData.copy(userName = cleanedUserName)
+
+                        println("[DEBUG] Loading data from: $dataSource, isFirstLoad: $currentIsFirstLoad")
+
+                        // Update the raw home data with the cleaned version
+                        _rawHomeData.value = cleanedHomeData
+
                         _uiState.update {
-                            it.copy(isLoading = false, error = null)
+                            it.copy(
+                                isLoading = false, 
+                                error = null,
+                                isFirstLoad = false,
+                                dataSource = dataSource
+                            )
+                        }
+
+                        // Reset first load flag after successful data load
+                        if (currentIsFirstLoad) {
+                            isFirstLoad = false
                         }
                     },
                     onFailure = { throwable ->
@@ -135,7 +179,7 @@ class HomeViewModel(
                 sortedExpenses.filter { LocalDate.parse(it.date) >= startDate && LocalDate.parse(it.date) <= today }
             }
         }
-        
+
         return filteredExpenses.sortedBy { LocalDate.parse(it.date) }
     }
 }

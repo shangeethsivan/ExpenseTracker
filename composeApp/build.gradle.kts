@@ -35,6 +35,7 @@ kotlin {
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
+            implementation(project(":datasource"))
         }
 
         val iosX64Main by getting
@@ -52,6 +53,7 @@ kotlin {
                 implementation(compose.foundation)
                 implementation(compose.material3)
                 implementation(compose.ui)
+                implementation(project(":datasource"))
             }
         }
 

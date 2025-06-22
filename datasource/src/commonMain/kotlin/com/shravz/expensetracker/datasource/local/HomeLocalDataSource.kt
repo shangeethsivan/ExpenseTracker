@@ -1,9 +1,9 @@
-package com.shravz.expensetracker.feature.home.data.local
+package com.shravz.expensetracker.datasource.local
 
-import com.shravz.expensetracker.feature.home.model.HomeData
-import com.shravz.expensetracker.feature.home.model.Expense
-import com.shravz.expensetracker.feature.home.model.Recipient
-import com.shravz.expensetracker.feature.home.model.Transaction
+import com.shravz.expensetracker.model.HomeData
+import com.shravz.expensetracker.model.Expense
+import com.shravz.expensetracker.model.Recipient
+import com.shravz.expensetracker.model.Transaction
 
 /**
  * Interface for local data operations related to home screen

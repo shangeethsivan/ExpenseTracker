@@ -1,15 +1,15 @@
-package com.shravz.expensetracker.feature.home.data.network
+package com.shravz.expensetracker.datasource.network
 
-import com.shravz.expensetracker.feature.home.model.HomeData
-import com.shravz.expensetracker.feature.home.model.Expense
-import com.shravz.expensetracker.feature.home.model.Recipient
-import com.shravz.expensetracker.feature.home.model.Transaction
+import com.shravz.expensetracker.model.HomeData
+import com.shravz.expensetracker.model.Expense
+import com.shravz.expensetracker.model.Recipient
+import com.shravz.expensetracker.model.Transaction
 import kotlinx.datetime.Clock
-import kotlinx.datetime.DatePeriod // Ensure this is imported
+import kotlinx.datetime.DatePeriod
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.todayIn
 import kotlinx.datetime.LocalDate
-import kotlinx.datetime.minus // This is for the operator, DatePeriod constructor is used directly
+import kotlinx.datetime.minus
 
 /**
  * Interface for fetching home data from the network
@@ -25,10 +25,10 @@ class MockHomeNetworkDataSource : HomeNetworkDataSource {
     override suspend fun getHomeData(): Result<HomeData> {
         // Simulate network delay
         kotlinx.coroutines.delay(500)
-        
+
         return Result.success(
             HomeData(
-                userName = "John",
+                userName = "John (Network)",
                 balance = 34996.0,
                 expenses = createMockExpenses(),
                 recipients = createMockRecipients(),
@@ -36,7 +36,7 @@ class MockHomeNetworkDataSource : HomeNetworkDataSource {
             )
         )
     }
-    
+
     private fun createMockExpenses(): List<Expense> {
         val today = Clock.System.todayIn(TimeZone.currentSystemDefault())
         return listOf(
@@ -48,7 +48,7 @@ class MockHomeNetworkDataSource : HomeNetworkDataSource {
             Expense("6", 90.0, today.minus(DatePeriod(days = 1)).toString(), "Food")
         )
     }
-    
+
     private fun createMockRecipients(): List<Recipient> {
         return listOf(
             Recipient("1", "Alice", null, 120.0),
@@ -60,7 +60,7 @@ class MockHomeNetworkDataSource : HomeNetworkDataSource {
             Recipient("7", "Gabe", null, 50.0),
         )
     }
-    
+
     private fun createMockTransactions(): List<Transaction> {
         val today = Clock.System.todayIn(TimeZone.currentSystemDefault())
         return listOf(
