@@ -56,7 +56,3 @@ The app implements an offline-first approach with automatic switching between lo
    - Network: `HomeNetworkDataSource` interface with mock implementation for development
 
 This architecture ensures the app works offline while providing up-to-date data when online.
-
-## Learn More
-
-Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html)
